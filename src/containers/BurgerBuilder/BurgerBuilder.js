@@ -26,6 +26,7 @@ class BurgerBuilder extends Component {
     purchasable: false,
     purchasing: false,
     loading: false,
+    error: false,
   };
 
   componentDidMount() {
@@ -33,6 +34,9 @@ class BurgerBuilder extends Component {
       .get("https://react-my-burger-1f066.firebaseio.com/ingredients.json")
       .then((response) => {
         this.setState({ ingredients: response.data });
+      })
+      .catch((error) => {
+        this.setState({ error: true });
       });
   }
   updatePurchaseState(ingredients) {
@@ -119,7 +123,11 @@ class BurgerBuilder extends Component {
     }
     // {salad: true, meat: false, ...}
     let orderSummary = null;
-    let burger = <Spinner />;
+    let burger = this.state.error ? (
+      <h1 style={{ textAlign: "center" }}>nothing is found</h1>
+    ) : (
+      <Spinner />
+    );
     if (this.state.ingredients) {
       burger = (
         <Aux>
